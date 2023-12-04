@@ -1,5 +1,5 @@
 
-# Some notes from Week 1
+# Notes from Week 1
 To run docker Postgres:
 ```
 docker run -it \
@@ -27,23 +27,25 @@ Make sure to pip install psycopg-binary if you have any porblems.
 ```curl https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-09.parquet -o yellow_tripdata_2023-09.parquet```
 
 ### Working with paraquet files
-Simple way to convert to pandas df:
+- Simple way to convert to pandas df:
 ```
 import pyarrow.parquet as pq
 table = pq.read_table('data.parquet')
 df = table.to_pandas()
 ```
-Geting the metadata for paraquet file
+- Geting the metadata for paraquet file
+
 ```metadata = pq.read_metadata('data.parquet')```
 
-Reading the file, reading the table from file and checking schema:
+- Reading the file, reading the table from file and checking schema:
 ```
 file = pq.ParquetFile('yellow_tripdata_2023-09.parquet')
 table = file.read()
 table.schema
 ```
 
-Creating an iterable with a batch_size from the paraquet file:
+- Creating an iterable with a batch_size from the paraquet file:
+
 ```file.iter_batches(batch_size=100000)```
 
 
