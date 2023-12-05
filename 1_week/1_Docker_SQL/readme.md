@@ -190,6 +190,9 @@ services:
 - ```docker-compose logs -f -t``` will show the logs of the container. ```-f``` follows the logs (opposite of -d) and ```-t``` shows timestamps.
 
 
+
+### Extra Bit
+
 PS:- To add the lookup table for SQL refresher, the zones file is in ```.csv``` format so the data-loading files have been edited to handle both parquet and csv files. After this I wanted to load the data using our container rather than what was done in the course. 
 
 What I decided to do is to add the taxi_ingest container to the ```docker-compose.yaml``` file, which looks like this:
