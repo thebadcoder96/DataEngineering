@@ -16,4 +16,6 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=root
     ports:
       - 8080:80
-      
+  dataloader:
+    image: taxi_ingest:v001 
+    command: ["--user=root", "--password=root", "--host=pgdatabase", "--port=5432", "--db=ny_taxi","--tb=yellow_taxi_data", "--url=https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-09.parquet"]

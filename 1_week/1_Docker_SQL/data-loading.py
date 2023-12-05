@@ -1,5 +1,5 @@
 #Cleaned up version of data-loading.ipynb
-import argparse, os
+import argparse, os, sys
 from time import time
 import pandas as pd 
 import pyarrow.parquet as pq
@@ -16,18 +16,27 @@ def main(params):
     url = params.url
     
     # Get the name of the file from url
-    paraquet_name = url.rsplit('/', 1)[-1].strip()
-    
+    file_name = url.rsplit('/', 1)[-1].strip()
+    print(f'Downloading {file_name} ...')
     # Download file from url
-    os.system(f'curl {url.strip()} -o {paraquet_name}')
+    os.system(f'curl {url.strip()} -o {file_name}')
     print('\n')
 
     # Create SQL engine
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')
 
-    # Read file
-    file = pq.ParquetFile(paraquet_name)
-    df = file.read().to_pandas()
+    # Read file based on csv or parquet
+    if '.csv' in file_name:
+        df = pd.read_csv(file_name, nrows=10)
+        df_iter = pd.read_csv(file_name, iterator=True, chunksize=100000)
+    elif '.parquet' in file_name:
+        file = pq.ParquetFile(file_name)
+        df = next(file.iter_batches(batch_size=10)).to_pandas()
+        df_iter = file.iter_batches(batch_size=100000)
+    else: 
+        print('Error. Only .csv or .parquet files allowed.')
+        sys.exit()
+
 
     # Create the table
     df.head(0).to_sql(name=tb, con=engine, if_exists='replace')
@@ -36,14 +45,20 @@ def main(params):
     # Insert values
     t_start = time()
     count = 0
-    for batch in file.iter_batches(batch_size=100000):
+    for batch in df_iter:
         count+=1
-        batch_df = batch.to_pandas()
+
+        if '.parquet' in file_name:
+            batch_df = batch.to_pandas()
+        else:
+            batch_df = batch
+
         print(f'inserting batch {count}...')
+
         b_start = time()
-        
         batch_df.to_sql(name=tb, con=engine, if_exists='append')
         b_end = time()
+
         print(f'inserted! time taken {b_end-b_start:10.3f} seconds.\n')
         
     t_end = time()   

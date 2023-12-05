@@ -156,7 +156,7 @@ Note: The parameters after the docker image name are the arguments for the pytho
 
 ### Docker Compose
 
-This allows for multiple container to run together. Create a ```.yaml``` file which stores the configurations of the docker containers needed. Docker compose is already installed with Docker Desktop for Windows and Mac.
+This allows for multiple containers to run together. Create a ```.yaml``` file which stores the configurations of the docker containers needed. Docker compose is already installed with Docker Desktop for Windows and Mac.
 
 This is what the ``.yaml`` file will look like:
 ```
@@ -181,13 +181,15 @@ services:
       
 ```
 
- This is running two services: pgdatabase and pgadmin. The configurations are as seen and there is network created or configured because it will be automatically created in the same network. 
+ This file will run two services: pgdatabase and pgadmin. The configurations are as seen and there is no network created or configured because the file will  automatically create a network and put the containers in it. 
 
-- ```docker-compose up``` will create the containers in the .yaml file.
+- ```docker-compose up``` will create the containers in the .yaml file. Ctrl+C to stop.
 - ```docker-compose down``` will shut down the containers.
 - ```docker-compose up -d``` will create and run them in detached mode which means the terminal is still available after this command instead of having to open new terminal.
+- ```docker-compose run <containername>``` will run the container you want. 
+- ```docker-compose logs -f -t``` will show the logs of the container. ```-f``` follows the logs (opposite of -d) and ```-t``` shows timestamps.
 
 
+PS:- To adding the lookup table for SQL refresher, the zones file is in ```.csv``` format so the data-loading files have been edited to handle both parquet and csv files.
 
-
-
+What I decided to it add the container that loads the data to the ```docker-compose.yaml``` file. 
