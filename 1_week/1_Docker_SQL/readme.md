@@ -156,4 +156,38 @@ Note: The parameters after the docker image name are the arguments for the pytho
 
 ### Docker Compose
 
-This allows for multiple container to run together. Create a ```.yaml``` file which stores the configurations of the docker containers needed. 
+This allows for multiple container to run together. Create a ```.yaml``` file which stores the configurations of the docker containers needed. Docker compose is already installed with Docker Desktop for Windows and Mac.
+
+This is what the ``.yaml`` file will look like:
+```
+services:
+  pgdatabase:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=root 
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=ny_taxi
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data_postgres:/var/lib/postgresql/data:rw
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=mishal@mazin.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - 8080:80
+      
+```
+
+ This is running two services: pgdatabase and pgadmin. The configurations are as seen and there is network created or configured because it will be automatically created in the same network. 
+
+- ```docker-compose up``` will create the containers in the .yaml file.
+- ```docker-compose down``` will shut down the containers.
+- ```docker-compose up -d``` will create and run them in detached mode which means the terminal is still available after this command instead of having to open new terminal.
+
+
+
+
+
