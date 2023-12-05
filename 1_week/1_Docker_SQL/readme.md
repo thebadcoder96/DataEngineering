@@ -114,7 +114,7 @@ args = parser.parse_args()
 Rest of the cleaning can be found in the ```data-loading.py``` file.
 
 ### Command Line code to run file
-This code for my MAC terminal, which is why I am using ```python3``` and ```curl```.
+This code for my MacOS terminal, which is why I am using ```python3``` and ```curl```.
 ```
 python3 data-loading.py \
     --user=root \
@@ -126,8 +126,8 @@ python3 data-loading.py \
     --url=https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-09.parquet \
 ```
 
-After updating the Docker file we need to build the docker image and then run it. 
-- Build Docker image
+After updating the Docker file, build the docker image and run it. 
+- Build Docker image:
 
 ```docker build -t <imagename>:<versionname>  <path of docker file>```
 
@@ -146,4 +146,4 @@ docker run -it \
     --tb=yellow_taxi_data \
     --url=${URL} \
 ```
-Note: The parameters after the docker image name are the arguements for the python file and the parameters before are the parameters for the docker image to run. 
+Note: The parameters after the docker image name are the arguments for the python file and the parameters before are the parameters for the docker image to run. 
