@@ -190,6 +190,32 @@ services:
 - ```docker-compose logs -f -t``` will show the logs of the container. ```-f``` follows the logs (opposite of -d) and ```-t``` shows timestamps.
 
 
-PS:- To adding the lookup table for SQL refresher, the zones file is in ```.csv``` format so the data-loading files have been edited to handle both parquet and csv files.
+PS:- To add the lookup table for SQL refresher, the zones file is in ```.csv``` format so the data-loading files have been edited to handle both parquet and csv files. After this I wanted to load the data using our container rather than what was done in the course. 
 
-What I decided to it add the container that loads the data to the ```docker-compose.yaml``` file. 
+What I decided to do is to add the container that loads data to the ```docker-compose.yaml``` file, which looks like this:
+```
+services:
+  pgdatabase:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=root 
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=ny_taxi
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data_postgres:/var/lib/postgresql/data:rw
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=mishal@mazin.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - 8080:80
+  dataloader:
+    image: taxi_ingest:v001 
+    command: ["--user=root", "--password=root", "--host=pgdatabase", "--port=5432", "--db=ny_taxi","--tb=zones", "--url=https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv"]
+
+```
+
+```command:``` can be used to feed the arguments for the python file.
