@@ -2,6 +2,12 @@
 # Notes from Week 1
 
 ## Docker and SQL
+- To check what containers are running: ```docker ps```.
+- To kill running containers: ```docker kill <containername>```.
+- To remove containers: ```docker rm <containername>```.
+- To list docker images ```docker images```.
+- To remove docker images ```docker rmi <name>:<tag>```.
+
 To run docker Postgres:
 ```
 docker run -it \
@@ -147,3 +153,7 @@ docker run -it \
     --url=${URL} \
 ```
 Note: The parameters after the docker image name are the arguments for the python file and the parameters before are the parameters for the docker image to run. 
+
+### Docker Compose
+
+This allows for multiple container to run together. Create a ```.yaml``` file which stores the configurations of the docker containers needed. 
