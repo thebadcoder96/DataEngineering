@@ -192,7 +192,7 @@ services:
 
 PS:- To add the lookup table for SQL refresher, the zones file is in ```.csv``` format so the data-loading files have been edited to handle both parquet and csv files. After this I wanted to load the data using our container rather than what was done in the course. 
 
-What I decided to do is to add the container that loads data to the ```docker-compose.yaml``` file, which looks like this:
+What I decided to do is to add the taxi_ingest container to the ```docker-compose.yaml``` file, which looks like this:
 ```
 services:
   pgdatabase:
@@ -219,3 +219,21 @@ services:
 ```
 
 ```command:``` can be used to feed the arguments for the python file.
+
+Then I realized that this is not a good idea since every time we run the container the data would load again. It is better to run pgdatabase and pgAdmin in the docker-compose containers and run the taxi_ingest container seperately. Which would look something like this:
+```
+URL="https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv"
+
+docker run -it \
+    --network=pg-network \
+    taxi_ingest:v001 \
+    --user=root \
+    --password=root \
+    --host=pg-database \
+    --port=5432 \
+    --db=ny_taxi \
+    --tb=zones \
+    --url=${URL} \
+```
+
+Of course I would still need to update the python file to handle ```.csv``` files. 
