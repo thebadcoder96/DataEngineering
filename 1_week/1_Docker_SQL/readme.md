@@ -255,6 +255,6 @@ docker run -it \
     --url=${URL} \
 ```
 
-Of course I would still need to update the python file to handle ```.csv``` files. But we still need to be able to run this container of the network that ``docker-compose`` created. We can find it by looking at the first feew lines of output when we ran the ```docker-compose up``` command on the terminal/cmd or look up the docker networks.
+Of course I would still need to update the python file to handle ```.csv``` files. But we still need to be able to run this container on the network that ``docker-compose`` created. We can find it by looking at the first few lines of output when the ```docker-compose up``` command was run on terminal/cmd or look up all the docker networks.
 
 - To list docker networks: ```docker network ls```
