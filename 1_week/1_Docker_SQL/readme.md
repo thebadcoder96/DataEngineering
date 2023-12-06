@@ -34,7 +34,7 @@ docker run -it \
     -p 5432:5432
     postgres:13
 ```
-- Note: ``Ctrl+C`` for stop running the docker database. 
+> Note: ``Ctrl+C`` for stop running the docker database. 
 
 
 ### To use pgcli
@@ -42,7 +42,7 @@ Make sure to pip install pgcli and psycopg-binary if you have any porblems.
 
 ```pgcli -h localhost -p 5432 -u root -d ny_taxi```
 
-- Note: ``Ctrl+D`` for exiting pcli 
+> Note: ``Ctrl+D`` for exiting pcli 
 
 
 ### Downloading data
@@ -131,7 +131,7 @@ parser.add_argument('--user', help='description')
 parser.add_argument('--pass', help='description')
 args = parser.parse_args()
 ```
-- Note: It is not a good idea to create take in any ```password``` related arguments since terminal/cmd keeps a history for what you typed and it was be leaked very easily. It is better to use environment variables or something else to keep your passwords protected.
+> Note: It is not a good idea to create take in any ```password``` related arguments since terminal/cmd keeps a history for what you typed and it was be leaked very easily. It is better to use environment variables or something else to keep your passwords protected.
 
 Rest of the cleaning can be found in the ```data-loading.py``` file.
 
@@ -168,7 +168,7 @@ docker run -it \
     --tb=yellow_taxi_data \
     --url=${URL} \
 ```
-Note: The parameters after the docker image name are the arguments for the python file and the parameters before are the parameters for the docker image to run. 
+> Note: The parameters after the docker image name are the arguments for the python file and the parameters before are the parameters for the docker image to run. 
 
 ### Docker Compose
 
