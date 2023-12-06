@@ -8,6 +8,22 @@
 - To list docker images ```docker images```.
 - To remove docker images ```docker rmi <name>:<tag>```.
 
+- To build custom docker image you need to create a ```DockerFile```. A beginner docker file:
+```
+FROM python:3.9
+
+RUN pip install pandas sqlalchemy psycopg2 pyarrow
+
+WORKDIR /app
+COPY data-loading.py data-loading.py
+
+ENTRYPOINT [ "python",  "data-loading.py"]
+```
+
+- To build the image: ```docker build -t <imagename>:<tagname>  <path of docker file>```.
+- To run container: ```docker run -it <imagename>:<tagname>```. ```-it``` is interacrive mode, without it we cannot ctrl+C to stop the container. We can kill it using Docker Desktop or above mentioned ```docker kill``` command.
+
+
 To run docker Postgres:
 ```
 docker run -it \
