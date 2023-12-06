@@ -244,7 +244,7 @@ Then I realized that this is not a good idea since every time we run the contain
 URL="https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv"
 
 docker run -it \
-    --network=pg-network \
+    --network=<enter_network_name> \
     taxi_ingest:v001 \
     --user=root \
     --password=root \
@@ -255,4 +255,6 @@ docker run -it \
     --url=${URL} \
 ```
 
-Of course I would still need to update the python file to handle ```.csv``` files. 
+Of course I would still need to update the python file to handle ```.csv``` files. But we still need to be able to run this container of the network that ``docker-compose`` created. We can find it by looking at the first feew lines of output when we ran the ```docker-compose up``` command on the terminal/cmd or look up the docker networks.
+
+- To list docker networks: ```docker network ls```
