@@ -9,7 +9,7 @@
 - To remove docker images ```docker rmi <name>:<tag>```.
 
 - To build custom docker image you need to create a ```DockerFile```. A beginner docker file:
-```
+```dockerfile
 FROM python:3.9
 
 RUN pip install pandas sqlalchemy psycopg2 pyarrow
@@ -21,7 +21,7 @@ ENTRYPOINT [ "python",  "data-loading.py"]
 ```
 
 - To build the image: ```docker build -t <imagename>:<tagname>  <path of docker file>```.
-- To run container: ```docker run -it <imagename>:<tagname>```. ```-it``` is interacrive mode, without it we cannot ctrl+C to stop the container. We can kill it using Docker Desktop or above mentioned ```docker kill``` command.
+- To run container: ```docker run -it <imagename>:<tagname>```. ```-it``` is interacrive mode, without it we cannot ``Ctrl+C`` to stop the container. We can kill it using Docker Desktop or above mentioned ```docker kill``` command.
 
 
 To run docker Postgres:
@@ -34,7 +34,7 @@ docker run -it \
     -p 5432:5432
     postgres:13
 ```
-- Note: Ctrl+C for stop running the docker database. 
+- Note: ``Ctrl+C`` for stop running the docker database. 
 
 
 ### To use pgcli
@@ -42,7 +42,7 @@ Make sure to pip install pgcli and psycopg-binary if you have any porblems.
 
 ```pgcli -h localhost -p 5432 -u root -d ny_taxi```
 
-- Note: Ctrl+D for exiting pcli 
+- Note: ``Ctrl+D`` for exiting pcli 
 
 
 ### Downloading data
@@ -110,7 +110,7 @@ docker run -it \
     dpage/pgadmin4
 ```
 
-- pgAdmin will be accessible at ```localhost:8080``` in your browser.
+- pgAdmin will be accessible at ```localhost:8080``` in your browser. You will need to connect to the server and the servername will be the other container's name, in our case, pg-database.
 
 ## Dockerize Everything
 
@@ -175,7 +175,7 @@ Note: The parameters after the docker image name are the arguments for the pytho
 This allows for multiple containers to run together. Create a ```.yaml``` file which stores the configurations of the docker containers needed. Docker compose is already installed with Docker Desktop for Windows and Mac.
 
 This is what the ``.yaml`` file will look like:
-```
+```yaml
 services:
   pgdatabase:
     image: postgres:13
@@ -199,7 +199,7 @@ services:
 
  This file will run two services: pgdatabase and pgadmin. The configurations are as seen and there is no network created or configured because the file will  automatically create a network and put the containers in it. 
 
-- ```docker-compose up``` will create the containers in the .yaml file. Ctrl+C to stop.
+- ```docker-compose up``` will create the containers in the .yaml file. ``Ctrl+C`` to stop.
 - ```docker-compose down``` will shut down the containers.
 - ```docker-compose up -d``` will create and run them in detached mode which means the terminal is still available after this command instead of having to open new terminal.
 - ```docker-compose run <containername>``` will run the container you want. 
@@ -212,7 +212,7 @@ services:
 PS:- To add the lookup table for SQL refresher, the zones file is in ```.csv``` format so the data-loading files have been edited to handle both parquet and csv files. After this I wanted to load the data using our container rather than what was done in the course. 
 
 What I decided to do is to add the taxi_ingest container to the ```docker-compose.yaml``` file, which looks like this:
-```
+```yaml
 services:
   pgdatabase:
     image: postgres:13
