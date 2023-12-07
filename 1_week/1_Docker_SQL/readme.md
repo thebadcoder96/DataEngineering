@@ -42,6 +42,12 @@ Make sure to pip install pgcli and psycopg-binary if you have any porblems.
 
 ```pgcli -h localhost -p 5432 -u root -d ny_taxi```
 
+* `-h` is the host.
+* `-p` is the port.
+* `-u` is the username.
+* `-d` is the database name.
+* The password will be requested after running the command.
+
 > Note: ``Ctrl+D`` for exiting pcli 
 
 
