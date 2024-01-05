@@ -41,5 +41,77 @@ Enable these APIs. Open the link and add them but be sure to be on the project. 
 
 - Terraform is basically used to bypass any cloud services GUI and it has source control, version control and is made in mind with the best practices of DevOps.
 - Terraform configuration files can be in `.tf` or `tf.json` for JSON files. There should be only one configuration file in the working directory. 
+- Usually there is a `main.tf` file and a `variables.tf` file. 
 - It is kinda like a docker-compose for cloud. 
+
+The only terraform commands mostly needed:
+    * `terraform fmt` : formats your configuration files in the right way.
+    * `terraform validate` : check if configuration is valid other throws out an error.
+    * `terraform init` : initialize by downloading mentioned providers/plugins.
+    * `terraform plan` :  Only displays the changes that will be applied to the remote state in GCP.
+    * `terraform apply` : applies the changes.
+    * `terraform destroy` : destroys everything that terraform build from the cloud infrastructure.
+
+
+
+Let's look at the a basic `main.tf` terraform script and disect it.
+
+```json
+terraform {
+  required_version = ">= 1.0"
+  backend "local" {}  // Can change from "local" to "gcs" (for google) or "s3" (for aws), if you would like to preserve your tf-state online
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+    }
+  }
+}
+
+provider "google" {
+  project = var.project
+  region = var.region
+  zone   = var.zone
+  credentials = file(var.credentials)  // Use this if you do not want to set env-var GOOGLE_APPLICATION_CREDENTIALS
+}
+
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id = var.dbid
+  project    = var.project
+  location   = var.region
+}
+```
+It uses simple block-style codes with 3 blocks, so let's run through it block by block.
+
+```json
+terraform {
+  required_version = ">= 1.0"
+  backend "local" {} 
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+    }
+  }
+}
+```
+There must only be one `terraform` block but there can be multiple `provider` and `resource` blocks.
+- The `terraform` block will run when you `terraform init`. 
+- Specify required version; not required.
+- `backend` is where to save the `.tfstate` file.
+- `required_providers` is which providers needed to be used. Here it is just one but we can use multiple. Another advantage of terraform.
+
+```json
+provider "google" {
+  project = var.project
+  region = var.region
+  zone   = var.zone
+  credentials = file(var.credentials)  
+}
+```
+Pretty straight-forward, just added the settings for GCP provider. Project name, region name, zone and credentials to connect to GCP (service account key). Note here there is something called `var.<name>`. Variabels from ``variable.tf`` which will be looked at after the next block.
+
+
+
+
+
+
 

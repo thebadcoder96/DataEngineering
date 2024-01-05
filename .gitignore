@@ -1,2 +1,15 @@
 1_week/1_Docker_SQL/data_postgres/
 1_week/2_Terraform_GCP/fluted-bot-407423-a51edcee3d3f.json
+
+*.DS_Store
+.idea
+*.tfstate
+*.tfstate.*
+**.terraform
+**.terraform.lock.*
+**google_credentials.json
+**logs/
+**.env
+**__pycache__/
+.history
+*/.ipynb_checkpoints/
