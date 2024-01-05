@@ -61,7 +61,7 @@ Creating an external table
 CREATE OR REPLACE EXTERNAL TABLE `silent-oasis-338916.trips_data_all.external_yellow_tripdata`
 OPTIONS (
   format = 'parquet',
-  uris = ['gs://dtc_data_lake_silent-oasis-338916/raw/yellow_tripdata_2019-*.parquet', 'gs://dtc_data_lake_silent-oasis-338916/raw/yellow_tripdata_2020-*.parquet ']
+  uris = ['gs://dtc_data_lake_silent-oasis-338916/raw/yellow_tripdata_2019-*.parquet']
 );
 ```
 here `gs://` is google storage, then the bucket and then the folder/file. 
