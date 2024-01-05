@@ -58,14 +58,119 @@ An _external table_ is a table that acts like a standard BQ table. The table met
 
 Creating an external table
 ```sql
-CREATE OR REPLACE EXTERNAL TABLE `silent-oasis-338916.trips_data_all.external_yellow_tripdata`
+CREATE OR REPLACE EXTERNAL TABLE `silent-oasis.trips_data_all.external_yellow_tripdata`
 OPTIONS (
   format = 'parquet',
-  uris = ['gs://dtc_data_lake_silent-oasis-338916/raw/yellow_tripdata_2019-*.parquet']
+  uris = ['gs://dtc_data_lake_silent-oasis/raw/yellow_tripdata_2019-*.parquet']
 );
 ```
 here `gs://` is google storage, then the bucket and then the folder/file. 
 
+### Partitioning in BQ
 
+Partitioning is awesome if you partition by what is most likely to be queried or filtered on. It will reduce cost if you use it smartly. 
 
+>Note: You can highlight your query and it will show an estimate of how much data will be read. This is not available in Clustering. More on that later.
 
+Syntax:
+```sql
+-- Create a partitioned table from external table
+CREATE OR REPLACE TABLE silent-oasis.trips_data_all.external_yellow_tripdata_partitoned
+PARTITION BY
+  DATE(tpep_pickup_datetime) AS
+SELECT * FROM silent-oasis.trips_data_all.external_yellow_tripdata;
+```
+Partition a table by:
+- _Time-unit column_: based on a `TIMESTAMP`, `DATE`, or `DATETIME` column.
+- _Ingestion time_ (`_PARTITIONTIME`): based on the timestamp when BQ ingests the data.
+- _Integer range_: based on an integer column.
+
+For time columns, the partition can be daily (default), hourly, monthly or yearly.
+
+>Note: BigQuery limits the amount of partitions to 4000 per table. Consider clustering if you want to further divide you table.
+
+[Read more about partitions.](https://cloud.google.com/bigquery/docs/partitioned-tables)
+
+We can also take a look into the information of the partition by:
+```sql
+SELECT table_name, partition_id, total_rows
+FROM `nytaxi.INFORMATION_SCHEMA.PARTITIONS`
+WHERE table_name = 'yellow_tripdata_partitoned'
+ORDER BY total_rows DESC;
+```
+> Every table in BQ has `INFORMATION_SCHEMA`
+
+### Clustering in BQ
+
+_Clustering_ consists of arranging/sorting a table based on the values of its columns. Again clustering should depend on how you query and filter the data.
+- Clustering can be done based on one or multiple columns up to ***4***.
+- The order of the columns is important in order to determine the column priority.
+- Clustering provides more granularity.
+- ***Automatic reclustering*** as more data is inserted into the table (clustering can become weak as there can be overlapping keys), BQ will automatically re-cluster the table in the background with no cost.
+- Do not use partitioning on columns with high cardinality or on columns that will change frequently and cause the partitions to be frequently recalculated.
+- Clustering may improve performance and lower costs on big datasets for queries that use filter clauses and aggregate data.
+
+>Note: tables with less than 1GB don't show significant improvement with partitioning and clustering; doing so in a small table could even lead to increased cost due to the additional metadata reads and metadata maintenance.
+
+Clustering columns must be top-level, non-repeated columns(Categorical Values). The datatypes supported:
+* `DATE`
+* `DATETIME`
+* `TIMESTAMP`
+* `BOOL`
+* `GEOGRAPHY`
+* `INT64`
+* `NUMERIC`
+* `BIGNUMERIC`
+* `STRING`
+
+Syntax:
+```sql
+CREATE OR REPLACE TABLE taxi-rides-ny.nytaxi.yellow_tripdata_partitoned_clustered
+PARTITION BY DATE(tpep_pickup_datetime)
+CLUSTER BY VendorID AS
+SELECT * FROM taxi-rides-ny.nytaxi.external_yellow_tripdata;
+```
+
+> As mentioned above, when you highlight the query on a clustered table, the estimate stated does not take the clustered into play and is wrong.
+
+| Clustering | Partitioning |
+|---|---|
+| Cost estimate unknown. BQ cannot estimate the reduction in cost before running a query. | Cost known upfront. |
+| High granularity. Multiple criteria can be used to sort the table. | Low granularity. Only a single column can be used to partition the table. You need partition-level management |
+| Clusters are "fixed in place". | Partitions can be added, deleted, modified or even moved between storage options. |
+| Queries that commonly filters or aggregation against multiple particular columns. | Filter or aggregate on a single column. |
+| The cardinality of the number of values in a column or group of columns is large. | Limited to 4000 partitions; cannot be used in columns with larger cardinality. |
+
+### When to choose Clustering over Partitioning?
+
+- Partitioning results in a small amount of data per partition (approximately < 1 GB).
+- Partitioning results in a large number of partitions beyond the limits on partitioned tables (> 4000 partitions).
+- Partitioning results in your mutation operations modifying the majority of partitions in the table frequently (for example, writing to the table every few minutes or every hour which makes the partitions change and writing to most of the partitions each time rather than just a handful).
+
+### How to get the best out of BQ
+
+Here's a list of [best practices for BigQuery](https://cloud.google.com/bigquery/docs/best-practices-performance-overview):
+
+* Cost reduction
+  * Avoid `SELECT *` . Reducing the amount of columns to display will drastically reduce the amount of processed data and lower costs.
+  * Price your queries before running them. Price can be seen in the top right.
+  * Use clustered and/or partitioned tables if possible.
+  * Use [streaming inserts](https://cloud.google.com/bigquery/streaming-data-into-bigquery) with caution. They can easily hike up the cost.
+  * [Materialize query results](https://cloud.google.com/bigquery/docs/materialized-views-intro) and CTE's in different stages.
+
+* Query performance
+  * Filter on partitioned columns.
+  * [Denormalize data](https://cloud.google.com/blog/topics/developers-practitioners/bigquery-explained-working-joins-nested-repeated-data).
+  * Use [nested or repeated columns](https://cloud.google.com/blog/topics/developers-practitioners/bigquery-explained-working-joins-nested-repeated-data).
+  * Use external data sources appropiately. Constantly reading data from a bucket may incur in additional costs and has worse performance. Don't use external tables if high performance is critical.
+  * Reduce data before using a `JOIN`.
+  * Do not threat `WITH` clauses as [prepared statements](https://www.wikiwand.com/en/Prepared_statement).
+  * Avoid [oversharding tables](https://cloud.google.com/bigquery/docs/partitioned-tables#dt_partition_shard).
+  * Avoid JavaScript user-defined functions.
+  * Use [approximate aggregation functions](https://cloud.google.com/bigquery/docs/reference/standard-sql/approximate_aggregate_functions) rather than complete ones such as [HyperLogLog++](https://cloud.google.com/bigquery/docs/reference/standard-sql/hll_functions).
+  * Order statements should be the last part of the query.
+  * [Optimize join patterns](https://cloud.google.com/bigquery/docs/best-practices-performance-compute#optimize_your_join_patterns).
+  * Place the table with the _largest_ number of rows first, followed by the table with the _fewest_ rows, and then place the remaining tables by decreasing size.
+    * This is due to how BigQuery works internally: the first table will be distributed evenly and the second table will be broadcasted to all the nodes. Check the [Internals section](#internals) for more details.
+
+    
