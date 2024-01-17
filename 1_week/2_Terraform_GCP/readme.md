@@ -132,6 +132,15 @@ variable "region" {
 - `type` is optional. 
 - `default` is what the value will be unless edited
 
+### Change Terraform variables on the fly
+```
+# Check changes to new infra plan
+terraform plan -var="project=<your-gcp-project-id>"
+
+# Create new infra
+terraform apply -var="project=<your-gcp-project-id>"
+```
+
 You can look at Terraforms documentation to know more about what providers and parameters are available and also how to use them. (`Ctl+F` is your friend)
 
 
