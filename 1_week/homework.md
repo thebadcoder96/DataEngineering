@@ -32,7 +32,8 @@ Which tag has the following text? - *Automatically remove the container when it 
 
 Run docker with the python:3.9 image in an interactive mode and the entrypoint of bash.
 Now check the python modules that are installed ( use ```pip list``` ). 
->HINT: ```docker run -it --entrypoint bash python:3.9```
+>HINT: 
+```docker run -it --entrypoint bash python:3.9```
 ```pip list``` in the bash.
 
 What is version of the package *wheel* ?
@@ -55,10 +56,10 @@ You will also need the dataset with zones:
 ```wget https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv```
 
 Download this data and put it into Postgres (with jupyter notebooks or with a pipeline)
-
-> `docker-compose up` to build the postgres and pgadmin. 
-  `docker network ls` to find the network or you can check the first few lines of the previous code.
-  `docker build -t dataload:0.1 .` build docker image from our code.
+>Hint:
+`docker-compose up` to build the postgres and pgadmin. 
+`docker network ls` to find the network or you can check the first few lines of the previous code.
+`docker build -t dataload:0.1 .` build docker image from our code.
   
   ```bash
     URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-09.csv.gz"
@@ -74,7 +75,7 @@ Download this data and put it into Postgres (with jupyter notebooks or with a pi
         --tb=green_taxi \
         --url=${URL} \
   ```
-    the above to insert the green taxi trips and the same with `url` and `db` change for zones
+the above to insert the green taxi trips and the same with `url` and `db` change for zones
 
 ## Question 3. Count records 
 
@@ -84,7 +85,7 @@ Tip: started and finished on 2019-09-18.
 
 Remember that `lpep_pickup_datetime` and `lpep_dropoff_datetime` columns are in the format timestamp (date and hour+min+sec) and not in date.
 
-> ```sql
+```sql
     SELECT COUNT(*) FROM green_taxi 
     WHERE CAST(lpep_pickup_datetime as DATE) = '2019-09-18'
     AND CAST(lpep_dropoff_datetime as DATE) = '2019-09-18';
