@@ -19,7 +19,7 @@ def main(params):
     file_name = url.rsplit('/', 1)[-1].strip()
     print(f'Downloading {file_name} ...')
     # Download file from url
-    os.system(f'curl {url.strip()} -o {file_name}')
+    os.system(f'wget {url.strip()}')
     print('\n')
 
     # Create SQL engine
