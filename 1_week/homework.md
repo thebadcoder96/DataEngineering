@@ -33,7 +33,7 @@ Which tag has the following text? - *Automatically remove the container when it 
 Run docker with the python:3.9 image in an interactive mode and the entrypoint of bash.
 Now check the python modules that are installed ( use ```pip list``` ). 
 >HINT: ```docker run -it --entrypoint bash python:3.9```
->```pip list``` in the bash.
+```pip list``` in the bash.
 
 What is version of the package *wheel* ?
 
@@ -56,8 +56,8 @@ You will also need the dataset with zones:
 
 Download this data and put it into Postgres (with jupyter notebooks or with a pipeline)
 >Hint: `docker-compose up` to build the postgres and pgadmin. 
->`docker network ls` to find the network or you can check the first few lines of the previous code.
->`docker build -t dataload:0.1 .` build docker image from our code.
+`docker network ls` to find the network or you can check the first few lines of the previous code.
+`docker build -t dataload:0.1 .` build docker image from our code.
   
   ```bash
     URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-09.csv.gz"
@@ -100,23 +100,37 @@ Remember that `lpep_pickup_datetime` and `lpep_dropoff_datetime` columns are in 
 Which was the pick up day with the largest trip distance
 Use the pick up time for your calculations.
 
+```sql
+SELECT trip_distance, lpep_pickup_datetime FROM green_taxi
+WHERE trip_distance = (SELECT MAX(trip_distance) FROM green_taxi);
+```
+
 - 2019-09-18
 - 2019-09-16
 - 2019-09-26
 - 2019-09-21
-
+>Ans: `2019-09-26` 
 
 ## Question 5. The number of passengers
 
 Consider lpep_pickup_datetime in '2019-09-18' and ignoring Borough has Unknown
 
 Which were the 3 pick up Boroughs that had a sum of total_amount superior to 50000?
- 
+ ```sql
+SELECT puz."Borough", SUM(total_amount) AmountSum
+FROM green_taxi gt
+INNER JOIN zones puz ON gt."PULocationID" = puz."LocationID"
+INNER JOIN zones doz ON gt."DOLocationID" = doz."LocationID"
+WHERE CAST(gt."lpep_pickup_datetime" as DATE) = '2019-09-18'
+GROUP BY puz."Borough" 
+HAVING SUM(total_amount) > 50000;
+```
+
 - "Brooklyn" "Manhattan" "Queens"
 - "Bronx" "Brooklyn" "Manhattan"
 - "Bronx" "Manhattan" "Queens" 
 - "Brooklyn" "Queens" "Staten Island"
-
+>Ans: `"Brooklyn" "Manhattan" "Queens"`
 
 ## Question 6. Largest tip
 
@@ -125,12 +139,21 @@ We want the name of the zone, not the id.
 
 Note: it's not a typo, it's `tip` , not `trip`
 
+```sql
+SELECT puz."Zone", doz."Zone", tip_amount
+FROM green_taxi gt
+INNER JOIN zones puz ON gt."PULocationID" = puz."LocationID"
+LEFT JOIN zones doz ON gt."DOLocationID" = doz."LocationID"
+WHERE puz."Zone" = 'Astoria'
+ORDER BY 3 DESC 
+LIMIT 1;
+```
+
 - Central Park
 - Jamaica
 - JFK Airport
 - Long Island City/Queens Plaza
-
-
+>Ans: `JFK Airport`
 
 ## Terraform
 
