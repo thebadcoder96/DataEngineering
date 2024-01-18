@@ -32,9 +32,8 @@ Which tag has the following text? - *Automatically remove the container when it 
 
 Run docker with the python:3.9 image in an interactive mode and the entrypoint of bash.
 Now check the python modules that are installed ( use ```pip list``` ). 
->HINT: 
-```docker run -it --entrypoint bash python:3.9```
-```pip list``` in the bash.
+>HINT: ```docker run -it --entrypoint bash python:3.9```
+>```pip list``` in the bash.
 
 What is version of the package *wheel* ?
 
@@ -56,10 +55,9 @@ You will also need the dataset with zones:
 ```wget https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv```
 
 Download this data and put it into Postgres (with jupyter notebooks or with a pipeline)
->Hint:
-`docker-compose up` to build the postgres and pgadmin. 
-`docker network ls` to find the network or you can check the first few lines of the previous code.
-`docker build -t dataload:0.1 .` build docker image from our code.
+>Hint: `docker-compose up` to build the postgres and pgadmin. 
+>`docker network ls` to find the network or you can check the first few lines of the previous code.
+>`docker build -t dataload:0.1 .` build docker image from our code.
   
   ```bash
     URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-09.csv.gz"
