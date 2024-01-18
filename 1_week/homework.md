@@ -170,10 +170,60 @@ Modify the files as necessary to create a GCP Bucket and Big Query Dataset.
 
 After updating the main.tf and variable.tf files run:
 
-```
+`terraform apply`
 
 Paste the output of this command into the homework submission form.
 
+```bash
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # google_bigquery_dataset.dataset will be created
+  + resource "google_bigquery_dataset" "dataset" {
+      + creation_time              = (known after apply)
+      + dataset_id                 = "example_dataset"
+      + default_collation          = (known after apply)
+      + delete_contents_on_destroy = false
+      + effective_labels           = (known after apply)
+      + etag                       = (known after apply)
+      + id                         = (known after apply)
+      + is_case_insensitive        = (known after apply)
+      + last_modified_time         = (known after apply)
+      + location                   = "us-central1"
+      + max_time_travel_hours      = (known after apply)
+      + project                    = "fluted-bot-407423"
+      + self_link                  = (known after apply)
+      + storage_billing_model      = (known after apply)
+      + terraform_labels           = (known after apply)
+    }
+
+  # google_storage_bucket.data-lake-bucket will be created
+  + resource "google_storage_bucket" "data-lake-bucket" {
+      + effective_labels            = (known after apply)
+      + force_destroy               = false
+      + id                          = (known after apply)
+      + location                    = "US-CENTRAL1"
+      + name                        = "dtc_data_lake_fluted-bot-407423"
+      + project                     = (known after apply)
+      + public_access_prevention    = (known after apply)
+      + rpo                         = (known after apply)
+      + self_link                   = (known after apply)
+      + storage_class               = "STANDARD"
+      + terraform_labels            = (known after apply)
+      + uniform_bucket_level_access = (known after apply)
+      + url                         = (known after apply)
+    }
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: 
+```
 
 ## Submitting the solutions
 
@@ -181,3 +231,4 @@ Paste the output of this command into the homework submission form.
 * You can submit your homework multiple times. In this case, only the last submission will be used. 
 
 Deadline: 29 January, 23:00 CET
+_Completed: 17 January_
