@@ -142,10 +142,3 @@ terraform apply -var="project=<your-gcp-project-id>"
 ```
 
 You can look at Terraforms documentation to know more about what providers and parameters are available and also how to use them. (`Ctl+F` is your friend)
-
-
-
-
-
-
-
