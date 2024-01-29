@@ -19,4 +19,12 @@ resource "google_bigquery_dataset" "dataset" {
   project    = var.project
   location   = var.region
 }
- 
+
+resource "google_storage_bucket" "data-lake-bucket" {
+  name          = "${local.data_lake_bucket}_${var.project}" # Concatenating DL bucket & Project name for unique naming
+  location      = var.region
+
+  # Optional, but recommended settings:
+  storage_class = var.storage_class
+
+}
